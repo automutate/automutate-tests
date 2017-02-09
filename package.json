@@ -1,0 +1,47 @@
+{
+  "name": "automutate-tests",
+  "version": "0.1.0",
+  "description": "Test harness for automutators.",
+  "index": "lib/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-mocha": "^3.0.1",
+    "gulp-sourcemaps": "^2.4.1",
+    "gulp-tslint": "^7.1.0",
+    "gulp-typescript": "^3.1.4",
+    "merge2": "^1.0.3",
+    "run-sequence": "^1.2.2"
+  },
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/automutate/automutate.git"
+  },
+  "keywords": [
+    "lint",
+    "autolint",
+    "linter",
+    "clean",
+    "code",
+    "quality",
+    "tslint",
+    "eslint",
+    "lesshint",
+    "tests"
+  ],
+  "author": "joshuakgoldberg@outlook.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/automutate/automutate-tests/issues"
+  },
+  "homepage": "https://github.com/automutate/automutate-tests#readme",
+  "dependencies": {
+    "automutate": "^0.3.3"
+  }
+}
