@@ -1,6 +1,6 @@
 {
   "name": "automutate-tests",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Test harness for automutators.",
   "index": "lib/index.js",
   "devDependencies": {
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/automutate/automutate.git"
+    "url": "git+https://github.com/automutate/automutate-tests.git"
   },
   "keywords": [
     "lint",
@@ -38,9 +38,9 @@
   "author": "joshuakgoldberg@outlook.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/automutate/automutate-tests/issues"
+    "url": "https://github.com/automutate/automutate-tests-tests/issues"
   },
-  "homepage": "https://github.com/automutate/automutate-tests#readme",
+  "homepage": "https://github.com/automutate/automutate-tests-tests#readme",
   "dependencies": {
     "automutate": "0.5.X"
   }

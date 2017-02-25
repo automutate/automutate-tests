@@ -41,7 +41,6 @@ import { TestsFactory } from "automutate/test/cases/testsFactory";
 
     await testsFactory.describe(path.join(__dirname, "cases"));
 })();
-
 ```
 
 Then, create a directory named `cases` with at least one sub-directory ("case").
