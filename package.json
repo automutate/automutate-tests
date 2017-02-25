@@ -3,9 +3,6 @@
   "version": "0.1.0",
   "description": "Test harness for automutators.",
   "index": "lib/index.js",
-  "directories": {
-    "test": "test"
-  },
   "devDependencies": {
     "del": "^2.2.2",
     "gulp": "^3.9.1",
@@ -42,6 +39,6 @@
   },
   "homepage": "https://github.com/automutate/automutate-tests#readme",
   "dependencies": {
-    "automutate": "^0.3.3"
+    "automutate": "0.5.X"
   }
 }

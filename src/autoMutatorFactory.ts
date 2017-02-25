@@ -42,9 +42,10 @@ export class AutoMutatorFactory {
     public create(fileName: string, settingsFileName?: string) {
         const logger = new Logger();
 
-        return new AutoMutator(
-            new FileMutationsApplier(logger),
-            this.mutationsProviderFactory(fileName, settingsFileName),
-            logger);
+        return new AutoMutator({
+            logger,
+            mutationsApplier: new FileMutationsApplier({ logger }),
+            mutationsProvider: this.mutationsProviderFactory(fileName, settingsFileName)
+        });
     }
 }
