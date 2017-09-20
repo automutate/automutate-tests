@@ -3,22 +3,6 @@
   "version": "0.1.2",
   "description": "Test harness for automutators.",
   "index": "lib/index.js",
-  "devDependencies": {
-    "@types/mocha": "^2.2.39",
-    "@types/node": "^7.0.5",
-    "del": "^2.2.2",
-    "gulp": "^3.9.1",
-    "gulp-mocha": "^3.0.1",
-    "gulp-sourcemaps": "^2.4.1",
-    "gulp-tslint": "^7.1.0",
-    "gulp-typescript": "^3.1.4",
-    "merge2": "^1.0.3",
-    "run-sequence": "^1.2.2",
-    "tslint": "^4.4.2"
-  },
-  "scripts": {
-    "test": "gulp test"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/automutate/automutate-tests.git"
@@ -38,10 +22,26 @@
   "author": "joshuakgoldberg@outlook.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/automutate/automutate-tests-tests/issues"
+    "url": "https://github.com/automutate/automutate-tests/issues"
   },
-  "homepage": "https://github.com/automutate/automutate-tests-tests#readme",
+  "homepage": "https://github.com/automutate/automutate-tests#readme",
+  "devDependencies": {
+    "@types/chai": "^4.0.4",
+    "@types/es6-promise": "0.0.33",
+    "@types/mocha": "^2.2.39",
+    "@types/node": "^7.0.5",
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-mocha": "^3.0.1",
+    "gulp-sourcemaps": "^2.4.1",
+    "gulp-tslint": "^7.1.0",
+    "gulp-typescript": "^3.1.4",
+    "merge2": "^1.0.3",
+    "run-sequence": "^1.2.2",
+    "tslint": "^4.4.2"
+  },
   "dependencies": {
-    "automutate": "0.5.X"
+    "automutate": "0.5.X",
+    "chai": "^4.1.2"
   }
 }

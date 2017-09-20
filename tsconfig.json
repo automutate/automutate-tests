@@ -7,9 +7,9 @@
         "noImplicitAny": true,
         "noImplicitThis": true,
         "noUnusedLocals": true,
-        "strictNullChecks": true,
         "noImplicitReturns": true,
         "sourceMap": true,
+        "strict": true,
         "outDir": "lib"
     },
     "exclude": [
