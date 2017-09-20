@@ -37,7 +37,7 @@ export class HierarchyCrawler {
 
     /**
      * Initialize a new instance of the HierarchyCrawler class.
-     * 
+     *
      * @param indicatingFileName   File name that must exist in a test case.
      */
     public constructor(indicatingFileName: string) {
@@ -46,26 +46,24 @@ export class HierarchyCrawler {
 
     /**
      * Crawls a directory to generate a test hierarchy.
-     * 
+     *
      * @param groupName   Friendly name of the directory.
      * @param directoryPath   Full path to the directory.
      * @returns The directory's generated test hierarchy.
      */
     public crawl(groupName: string, directoryPath: string): IHierarchy {
         const childDirectories: string[] = fs.readdirSync(directoryPath)
-            .filter((fileName: string): boolean => {
-                return fs.statSync(path.join(directoryPath, fileName)).isDirectory();
-            });
+            .filter((fileName: string): boolean =>
+                fs.statSync(path.join(directoryPath, fileName)).isDirectory());
 
         const containsTest: boolean = fs.existsSync(path.join(directoryPath, this.indicatingFileName));
 
         return {
-            children: childDirectories.map((childDirectory: string): IHierarchy => {
-                return this.crawl(childDirectory, path.join(directoryPath, childDirectory));
-            }),
+            children: childDirectories.map((childDirectory: string): IHierarchy =>
+                this.crawl(childDirectory, path.join(directoryPath, childDirectory))),
             containsTest,
             directoryPath,
-            groupName
+            groupName,
         };
     }
 }

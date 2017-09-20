@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import * as fs from "fs";
+import * as fs from "mz/fs";
 
 import { AutoMutator } from "automutate/lib/automutator";
 import { AutoMutatorFactory } from "./autoMutatorFactory";
@@ -45,7 +45,7 @@ export class TestCase {
 
     /**
      * Initializes a new instance of the TestCase class.
-     * 
+     *
      * @param settings   Settings for the test case.
      * @param autoMutatorFactory   Generates AutoMutator instances for testing.
      */
@@ -56,29 +56,29 @@ export class TestCase {
 
     /**
      * Runs the test case.
-     * 
+     *
      * @returns A Promise for running the test.
      */
-    public run(): Promise<void> {
+    public async run(): Promise<void> {
         // Arrange
-        this.arrangeFiles();
-        const expectedContents: string = fs.readFileSync(this.settings.expected).toString();
+        await this.arrangeFiles();
+        const expectedContents: string = (await fs.readFile(this.settings.expected)).toString();
         const autoMutator: AutoMutator = this.autoMutatorFactory.create(this.settings.actual, this.settings.settings);
 
         // Act
-        return autoMutator
-            .run()
-            .then((): void => {
-                // Assert
-                const actualContents: string = fs.readFileSync(this.settings.actual).toString();
-                expect(actualContents).to.be.equal(expectedContents);
-            });
+        await autoMutator.run();
+
+        // Assert
+        const actualContents: string = (await fs.readFile(this.settings.actual)).toString();
+        expect(actualContents).to.be.equal(expectedContents);
     }
 
     /**
      * Resets the test case files.
      */
-    private arrangeFiles(): void {
-        fs.writeFileSync(this.settings.actual, fs.readFileSync(this.settings.original));
+    private async arrangeFiles(): Promise<void> {
+        const original = await fs.readFile(this.settings.original);
+
+        await fs.writeFile(this.settings.actual, original);
     }
 }
