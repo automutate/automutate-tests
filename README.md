@@ -1,5 +1,7 @@
 # automutate-tests
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/automutate/automutate-tests.svg)](https://greenkeeper.io/)
+
 End-to-end test utilities for packages that rely on `automutate`.
 
 ## Description
