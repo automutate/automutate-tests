@@ -1,7 +1,7 @@
+import { AutoMutator } from "automutate";
 import { expect } from "chai";
 import * as fs from "mz/fs";
 
-import { AutoMutator } from "automutate/lib/automutator";
 import { AutoMutatorFactory } from "./autoMutatorFactory";
 
 /**

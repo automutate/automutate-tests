@@ -26,10 +26,10 @@ Define a test file with JavaScript or TypeScript similar to the following:
 ```typescript
 import * as path from "path";
 
-import { MyMutationsProvider } from "../lib/MyMutationsProvider";
-import { TestsFactory } from "automutate/test/cases/testsFactory";
+import { MyMutationsProvider } from "./MyMutationsProvider";
+import { TestsFactory } from "automutate-tests";
 
-(async (): Promise<void> => {
+(async () => {
     const testsFactory = new TestsFactory(
         (fileName, settingsFileName) => new MyMutationsProvider(fileName, settingsFileName)
         {
@@ -44,7 +44,7 @@ import { TestsFactory } from "automutate/test/cases/testsFactory";
 ```
 
 Then, create a directory named `cases` with at least one sub-directory ("case").
-Each case should contain files named `expected` and `original` with your extension.
+Each case should contain files named `expected.txt` and `original.txt` with your extension.
 
-When tests are run, the `original` file will be copied to an `actual` file and mutated.
-It should then contain the same contents as the `expected` file.
+When tests are run, the `original.txt` file will be copied to an `actual.txt` file and mutated.
+It should then contain the same contents as the `expected.txt` file.

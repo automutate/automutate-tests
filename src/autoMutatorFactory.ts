@@ -1,7 +1,4 @@
-import { AutoMutator } from "automutate/lib/autoMutator";
-import { Logger } from "automutate/lib/logger";
-import { FileMutationsApplier } from "automutate/lib/mutationsAppliers/fileMutationsApplier";
-import { IMutationsProvider } from "automutate/lib/mutationsProvider";
+import { AutoMutator, FileMutationsApplier, IMutationsProvider, Logger } from "automutate";
 
 /**
  * Creates mutation providers for files.
