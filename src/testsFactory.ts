@@ -2,11 +2,13 @@ import * as path from "path";
 
 import { AutoMutatorFactory, IMutationsProviderFactory } from "./autoMutatorFactory";
 import { HierarchyCrawler, IHierarchy } from "./hierarchyCrawler";
-import { ITestCaseSettings, TestCase } from "./testCase";
+import { ITestCaseSettings, runTestCase } from "./testCase";
 import { TestDescriber } from "./testDescriber";
 
 /**
  * Creates tests for provided cases.
+ *
+ * @deprecated   Use {@link describeMutationTestCases} instead.
  */
 export class TestsFactory {
     /**
@@ -75,7 +77,22 @@ export class TestsFactory {
      * @returns A Promise for running the test.
      */
     private async runTest(hierarchy: IHierarchy): Promise<void> {
-        await (new TestCase(this.createTestCaseSettings(hierarchy.directoryPath), this.autoMutatorFactory))
-            .run();
+        await runTestCase(this.createTestCaseSettings(hierarchy.directoryPath), this.autoMutatorFactory);
     }
 }
+
+/**
+ * @param casesPath   Path to the test cases.
+ * @param mutationsProviderFactory   Creates test cases from test case settings.
+ * @param settings   File names for test cases.
+ */
+export const describeMutationTestCases = (
+    casesPath: string,
+    mutationsProviderFactory: IMutationsProviderFactory,
+    testCaseSettings: ITestCaseSettings,
+): void => {
+    // tslint:disable-next-line:deprecation
+    const testsFactory = new TestsFactory(mutationsProviderFactory, testCaseSettings);
+
+    testsFactory.describe(casesPath);
+};

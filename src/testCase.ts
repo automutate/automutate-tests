@@ -30,55 +30,34 @@ export interface ITestCaseSettings {
 }
 
 /**
- * Describes a single test case to be run.
+ * Runs a single test case.
+ *
+ * @param settings   Settings for the test case.
+ * @param autoMutatorFactory   Generates AutoMutator instances for testing.
+ * @returns A Promise for running the test.
  */
-export class TestCase {
-    /**
-     * Generates AutoMutator instances for testing.
-     */
-    private readonly autoMutatorFactory: AutoMutatorFactory;
+export const runTestCase = async (
+    settings: ITestCaseSettings,
+    autoMutatorFactory: AutoMutatorFactory,
+): Promise<void> => {
+    // Arrange
+    await arrangeFiles(settings.actual, settings.original);
+    const expectedContents: string = (await fs.readFile(settings.expected)).toString();
+    const autoMutator: AutoMutator = autoMutatorFactory.create(settings.actual, settings.settings);
 
-    /**
-     * Settings for the test case.
-     */
-    private readonly settings: ITestCaseSettings;
+    // Act
+    await autoMutator.run();
 
-    /**
-     * Initializes a new instance of the TestCase class.
-     *
-     * @param settings   Settings for the test case.
-     * @param autoMutatorFactory   Generates AutoMutator instances for testing.
-     */
-    public constructor(settings: ITestCaseSettings, autoMutatorFactory: AutoMutatorFactory) {
-        this.settings = settings;
-        this.autoMutatorFactory = autoMutatorFactory;
-    }
+    // Assert
+    const actualContents: string = (await fs.readFile(settings.actual)).toString();
+    expect(actualContents).to.be.equal(expectedContents);
+};
 
-    /**
-     * Runs the test case.
-     *
-     * @returns A Promise for running the test.
-     */
-    public async run(): Promise<void> {
-        // Arrange
-        await this.arrangeFiles();
-        const expectedContents: string = (await fs.readFile(this.settings.expected)).toString();
-        const autoMutator: AutoMutator = this.autoMutatorFactory.create(this.settings.actual, this.settings.settings);
+/**
+ * Resets a test case's files.
+ */
+const arrangeFiles = async (actual: string, original: string): Promise<void> => {
+    const originalContents = await fs.readFile(original);
 
-        // Act
-        await autoMutator.run();
-
-        // Assert
-        const actualContents: string = (await fs.readFile(this.settings.actual)).toString();
-        expect(actualContents).to.be.equal(expectedContents);
-    }
-
-    /**
-     * Resets the test case files.
-     */
-    private async arrangeFiles(): Promise<void> {
-        const original = await fs.readFile(this.settings.original);
-
-        await fs.writeFile(this.settings.actual, original);
-    }
-}
+    await fs.writeFile(actual, originalContents);
+};
