@@ -9,6 +9,11 @@ import { AutoMutatorFactory } from "./autoMutatorFactory";
  */
 export interface ITestCaseSettings {
     /**
+     * Whether to override the expected file content's with the actual results, instead of checking equality.
+     */
+    accept?: boolean;
+
+    /**
      * File name or contents for the mutation result.
      */
     actual: string;
@@ -50,14 +55,17 @@ export const runTestCase = async (
 
     // Assert
     const actualContents: string = (await fs.readFile(settings.actual)).toString();
-    expect(actualContents).to.be.equal(expectedContents);
+
+    if (settings.accept) {
+        await fs.writeFile(settings.expected, actualContents);
+    } else {
+        expect(actualContents).to.be.equal(expectedContents);
+    }
 };
 
 /**
  * Resets a test case's files.
  */
 const arrangeFiles = async (actual: string, original: string): Promise<void> => {
-    const originalContents = await fs.readFile(original);
-
-    await fs.writeFile(actual, originalContents);
+    await fs.writeFile(actual, await fs.readFile(original));
 };

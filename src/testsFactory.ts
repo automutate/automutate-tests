@@ -63,6 +63,7 @@ export class TestsFactory {
      */
     private createTestCaseSettings(casePath: string): ITestCaseSettings {
         return {
+            accept: this.settings.accept,
             actual: path.join(casePath, this.settings.actual),
             expected: path.join(casePath, this.settings.expected),
             original: path.join(casePath, this.settings.original),
