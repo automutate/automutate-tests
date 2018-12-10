@@ -1,9 +1,20 @@
+import chalk from "chalk";
 import * as path from "path";
 
 import { AutoMutatorFactory, IMutationsProviderFactory } from "./autoMutatorFactory";
+import { describeTests } from "./describeTests";
 import { HierarchyCrawler, IHierarchy } from "./hierarchyCrawler";
 import { ITestCaseSettings, runTestCase } from "./testCase";
-import { TestDescriber } from "./testDescriber";
+
+/**
+ * Settings to describe test cases, namely file names and CLI flag equivalents.
+ */
+export interface ITestDescriptionSettings extends ITestCaseSettings {
+    /**
+     * Wildcard(s) of tests to run.
+     */
+    includes?: RegExp[];
+}
 
 /**
  * Creates tests for provided cases.
@@ -24,12 +35,7 @@ export class TestsFactory {
     /**
      * Settings for the test cases.
      */
-    private readonly settings: ITestCaseSettings;
-
-    /**
-     * Describes test cases using their hierarchy.
-     */
-    private readonly testDescriber: TestDescriber;
+    private readonly settings: ITestDescriptionSettings;
 
     /**
      * Initializes a new instance of the TestsFactory class.
@@ -37,13 +43,11 @@ export class TestsFactory {
      * @param mutationsProviderFactory   Creates test cases from test case settings.
      * @param extension   File extension of test case files.
      */
-    public constructor(mutationsProviderFactory: IMutationsProviderFactory, settings: ITestCaseSettings) {
+    public constructor(mutationsProviderFactory: IMutationsProviderFactory, settings: ITestDescriptionSettings) {
         this.autoMutatorFactory = new AutoMutatorFactory(mutationsProviderFactory);
         this.settings = settings;
 
         this.hierarchyCrawler = new HierarchyCrawler(this.settings.original);
-        this.testDescriber = new TestDescriber(
-            async (hierarchy: IHierarchy): Promise<void> => this.runTest(hierarchy));
     }
 
     /**
@@ -52,7 +56,18 @@ export class TestsFactory {
      * @param casesPath   Path to the test cases.
      */
     public describe(casesPath: string): void {
-        this.testDescriber.describe(this.hierarchyCrawler.crawl("cases", casesPath));
+        if (this.settings.includes !== undefined && this.settings.includes.length !== 0) {
+            console.log(
+                "Including only tests that match any of:\n - ",
+                chalk.cyan(this.settings.includes.join("\n - ")),
+            );
+        }
+
+        describeTests(
+            this.hierarchyCrawler.crawl("cases", casesPath),
+            async (hierarchy: IHierarchy): Promise<void> => this.runTest(hierarchy),
+            this.settings.includes,
+        );
     }
 
     /**
@@ -85,15 +100,15 @@ export class TestsFactory {
 /**
  * @param casesPath   Path to the test cases.
  * @param mutationsProviderFactory   Creates test cases from test case settings.
- * @param settings   File names for test cases.
+ * @param settings   Settings to describe test cases, namely file names and CLI flag equivalents.
  */
 export const describeMutationTestCases = (
     casesPath: string,
     mutationsProviderFactory: IMutationsProviderFactory,
-    testCaseSettings: ITestCaseSettings,
+    settings: ITestDescriptionSettings,
 ): void => {
     // tslint:disable-next-line:deprecation
-    const testsFactory = new TestsFactory(mutationsProviderFactory, testCaseSettings);
+    const testsFactory = new TestsFactory(mutationsProviderFactory, settings);
 
     testsFactory.describe(casesPath);
 };
