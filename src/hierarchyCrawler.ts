@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import * as glob from "glob";
 import * as path from "path";
 
 /**
@@ -56,12 +57,12 @@ export class HierarchyCrawler {
             .filter((fileName: string): boolean =>
                 fs.statSync(path.join(directoryPath, fileName)).isDirectory());
 
-        const containsTest: boolean = fs.existsSync(path.join(directoryPath, this.indicatingFileName));
+        const matched = glob.sync(path.join(directoryPath, this.indicatingFileName));
 
         return {
             children: childDirectories.map((childDirectory: string): IHierarchy =>
                 this.crawl(childDirectory, path.join(directoryPath, childDirectory))),
-            containsTest,
+            containsTest: matched.length > 0,
             directoryPath,
             groupName,
         };

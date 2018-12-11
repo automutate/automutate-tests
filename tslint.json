@@ -4,6 +4,7 @@
         "callable-types": false,
         "comment-format": false,
         "linebreak-style": false,
+        "max-line-length": [true, 140],
         "newline-before-return": false,
         "newline-per-chained-call": false,
         "no-console": false,

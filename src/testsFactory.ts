@@ -1,4 +1,5 @@
 import chalk from "chalk";
+import * as glob from "glob";
 import * as path from "path";
 
 import { AutoMutatorFactory, IMutationsProviderFactory } from "./autoMutatorFactory";
@@ -71,31 +72,42 @@ export class TestsFactory {
     }
 
     /**
-     * Creates settings for a test case.
-     *
-     * @param casePath   Path to a test case.
-     * @returns Settings for the test case.
-     */
-    private createTestCaseSettings(casePath: string): ITestCaseSettings {
-        return {
-            accept: this.settings.accept,
-            actual: path.join(casePath, this.settings.actual),
-            expected: path.join(casePath, this.settings.expected),
-            original: path.join(casePath, this.settings.original),
-            settings: path.join(casePath, this.settings.settings),
-        };
-    }
-
-    /**
      * Creates and runs a test case.
      *
      * @param hierarchy   The case's hierarchy.
      * @returns A Promise for running the test.
      */
     private async runTest(hierarchy: IHierarchy): Promise<void> {
-        await runTestCase(this.createTestCaseSettings(hierarchy.directoryPath), this.autoMutatorFactory);
+        const caseSettings = createTestCaseSettings(this.settings, hierarchy.directoryPath);
+        if (caseSettings === undefined) {
+            throw new Error(`Could not find ${this.settings.original} under ${hierarchy.directoryPath}.`);
+        }
+
+        await runTestCase(caseSettings, this.autoMutatorFactory);
     }
 }
+
+/**
+ * Creates settings for a test case.
+ *
+ * @param settings   Settings for test cases.
+ * @param casePath   Path to a test case.
+ * @returns Settings for the test case.
+ */
+const createTestCaseSettings = (settings: ITestDescriptionSettings, casePath: string): ITestCaseSettings | undefined => {
+    const original = glob.sync(path.join(casePath, settings.original))[0];
+    if (original === undefined) {
+        return undefined;
+    }
+
+    return {
+        accept: settings.accept,
+        actual: path.join(casePath, settings.actual),
+        expected: path.join(casePath, settings.expected),
+        original,
+        settings: path.join(casePath, settings.settings),
+    };
+};
 
 /**
  * @param casesPath   Path to the test cases.

@@ -5,7 +5,7 @@ import * as fs from "mz/fs";
 import { AutoMutatorFactory } from "./autoMutatorFactory";
 
 /**
- * File names or contents for test cases.
+ * File names and settings for test cases.
  */
 export interface ITestCaseSettings {
     /**
@@ -14,22 +14,22 @@ export interface ITestCaseSettings {
     accept?: boolean;
 
     /**
-     * File name or contents for the mutation result.
+     * File name for the mutation result.
      */
     actual: string;
 
     /**
-     * File name or contents for what the mutation result should be.
+     * File name for what the mutation result should be.
      */
     expected: string;
 
     /**
-     * File name or contents for the original file contents.
+     * File name for the original file contents.
      */
     original: string;
 
     /**
-     * File name or contents for the settings file.
+     * File name for the settings file.
      */
     settings: string;
 }
