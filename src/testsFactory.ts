@@ -95,8 +95,8 @@ export class TestsFactory {
  * @returns Settings for the test case.
  */
 const createTestCaseSettings = (settings: ITestDescriptionSettings, casePath: string): ITestCaseSettings | undefined => {
-    const original = glob.sync(path.join(casePath, settings.original))[0];
-    if (original === undefined) {
+    const matches = glob.sync(path.join(casePath, settings.original));
+    if (matches.length === 0) {
         return undefined;
     }
 
@@ -104,7 +104,7 @@ const createTestCaseSettings = (settings: ITestDescriptionSettings, casePath: st
         accept: settings.accept,
         actual: path.join(casePath, settings.actual),
         expected: path.join(casePath, settings.expected),
-        original,
+        original: matches[0],
         settings: path.join(casePath, settings.settings),
     };
 };
