@@ -1,8 +1,8 @@
-import { AutoMutator } from "automutate";
+import { FileMutationsApplier, Logger, runMutations } from "automutate";
 import { expect } from "chai";
 import * as fs from "mz/fs";
 
-import { AutoMutatorFactory } from "./autoMutatorFactory";
+import { IMutationsProviderFactory } from "./mutationsProviderFactory";
 
 /**
  * File names and settings for test cases.
@@ -38,20 +38,24 @@ export interface ITestCaseSettings {
  * Runs a single test case.
  *
  * @param settings   Settings for the test case.
- * @param autoMutatorFactory   Generates AutoMutator instances for testing.
+ * @param autoMutatorFactory   Creates mutation providers for files.
  * @returns A Promise for running the test.
  */
 export const runTestCase = async (
     settings: ITestCaseSettings,
-    autoMutatorFactory: AutoMutatorFactory,
+    mutationsProviderFactory: IMutationsProviderFactory,
 ): Promise<void> => {
     // Arrange
     await arrangeFiles(settings.actual, settings.original);
     const expectedContents: string = (await fs.readFile(settings.expected)).toString();
-    const autoMutator: AutoMutator = autoMutatorFactory.create(settings.actual, settings.settings);
+    const logger = new Logger();
 
     // Act
-    await autoMutator.run();
+    await runMutations({
+        logger,
+        mutationsApplier: new FileMutationsApplier({ logger }),
+        mutationsProvider: mutationsProviderFactory(settings.actual, settings.settings),
+    });
 
     // Assert
     const actualContents: string = (await fs.readFile(settings.actual)).toString();

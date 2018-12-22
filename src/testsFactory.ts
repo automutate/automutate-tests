@@ -2,9 +2,9 @@ import chalk from "chalk";
 import * as glob from "glob";
 import * as path from "path";
 
-import { AutoMutatorFactory, IMutationsProviderFactory } from "./autoMutatorFactory";
 import { describeTests } from "./describeTests";
 import { HierarchyCrawler, IHierarchy } from "./hierarchyCrawler";
+import { IMutationsProviderFactory } from "./mutationsProviderFactory";
 import { ITestCaseSettings, runTestCase } from "./testCase";
 
 /**
@@ -24,14 +24,14 @@ export interface ITestDescriptionSettings extends ITestCaseSettings {
  */
 export class TestsFactory {
     /**
-     * Creates test cases from test case settings.
-     */
-    private readonly autoMutatorFactory: AutoMutatorFactory;
-
-    /**
      * Generates a directory-based test hierarchy from the file system.
      */
     private readonly hierarchyCrawler: HierarchyCrawler;
+
+    /**
+     * Creates test cases from test case settings.
+     */
+    private readonly mutationsProviderFactory: IMutationsProviderFactory;
 
     /**
      * Settings for the test cases.
@@ -45,7 +45,7 @@ export class TestsFactory {
      * @param extension   File extension of test case files.
      */
     public constructor(mutationsProviderFactory: IMutationsProviderFactory, settings: ITestDescriptionSettings) {
-        this.autoMutatorFactory = new AutoMutatorFactory(mutationsProviderFactory);
+        this.mutationsProviderFactory = mutationsProviderFactory;
         this.settings = settings;
 
         this.hierarchyCrawler = new HierarchyCrawler(this.settings.original);
@@ -83,7 +83,7 @@ export class TestsFactory {
             throw new Error(`Could not find ${this.settings.original} under ${hierarchy.directoryPath}.`);
         }
 
-        await runTestCase(caseSettings, this.autoMutatorFactory);
+        await runTestCase(caseSettings, this.mutationsProviderFactory);
     }
 }
 
