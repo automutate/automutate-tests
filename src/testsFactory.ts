@@ -104,6 +104,7 @@ const createTestCaseSettings = (settings: ITestDescriptionSettings, casePath: st
         accept: settings.accept,
         actual: path.join(casePath, settings.actual),
         expected: path.join(casePath, settings.expected),
+        normalizeEndlines: settings.normalizeEndlines,
         original: matches[0],
         settings: path.join(casePath, settings.settings),
     };

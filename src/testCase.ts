@@ -24,6 +24,11 @@ export interface ITestCaseSettings {
     expected: string;
 
     /**
+     * Endlines to normalize \r\n|\n to, if anything.
+     */
+    normalizeEndlines?: string;
+
+    /**
      * File name for the original file contents.
      */
     original: string;
@@ -58,7 +63,11 @@ export const runTestCase = async (
     });
 
     // Assert
-    const actualContents: string = (await fs.readFile(settings.actual)).toString();
+    let actualContents: string = (await fs.readFile(settings.actual)).toString();
+
+    if (settings.normalizeEndlines !== undefined) {
+        actualContents = actualContents.replace(/\r\n|\n/g, settings.normalizeEndlines);
+    }
 
     if (settings.accept) {
         await fs.writeFile(settings.expected, actualContents);
