@@ -1,6 +1,6 @@
 {
   "name": "automutate-tests",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "Test harness for automutators.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
