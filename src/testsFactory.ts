@@ -10,11 +10,41 @@ import { ITestCaseSettings, runTestCase } from "./testCase";
 /**
  * Settings to describe test cases, namely file names and CLI flag equivalents.
  */
-export interface ITestDescriptionSettings extends ITestCaseSettings {
+export interface ITestDescriptionSettings {
+    /**
+     * Whether to override the expected file content's with the actual results, instead of checking equality.
+     */
+    accept?: boolean;
+
+    /**
+     * File name or file name generator for the mutation result.
+     */
+    actual: string | ((original: string) => string);
+
+    /**
+     * File name or file name generator for what the mutation result should be.
+     */
+    expected: string | ((original: string) => string);
+
     /**
      * Wildcard(s) of tests to run.
      */
     includes?: RegExp[];
+
+    /**
+     * Endlines to normalize \r\n|\n to, if anything.
+     */
+    normalizeEndlines?: string;
+
+    /**
+     * File name for the original file contents.
+     */
+    original: string;
+
+    /**
+     * File name for the settings file.
+     */
+    settings: string;
 }
 
 /**
@@ -102,13 +132,18 @@ const createTestCaseSettings = (settings: ITestDescriptionSettings, casePath: st
 
     return {
         accept: settings.accept,
-        actual: path.join(casePath, settings.actual),
-        expected: path.join(casePath, settings.expected),
+        actual: path.join(casePath, getSettingsFile(settings.actual, settings.original)),
+        expected: path.join(casePath, getSettingsFile(settings.expected, settings.original)),
         normalizeEndlines: settings.normalizeEndlines,
         original: matches[0],
         settings: path.join(casePath, settings.settings),
     };
 };
+
+const getSettingsFile = (filePath: string | ((original: string) => string), original: string): string =>
+    typeof filePath === "string"
+        ? filePath
+        : filePath(original);
 
 /**
  * @param casesPath   Path to the test cases.
