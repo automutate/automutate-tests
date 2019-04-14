@@ -4,12 +4,13 @@
 
 End-to-end test utilities for packages that rely on `automutate`.
 
-## Description
+## Usage
 
-`TestFactory`'s constructor takes in two arguments:
+`automutate-tests` exports a `describeMutationTestCases` function that takes in three arguments:
 
-1. A method to create a mutation provider for each file.
-2. Names of files that test cases are composed of.
+1. Root path to search under for cases
+2. A method to create a mutation provider for each file.
+3. Names of files that test cases are composed of.
 
 Its `describe` method takes in a a directory path containing test case directories.
 
@@ -21,32 +22,30 @@ It also expects `chai` to be explicitly installed.
 npm install --save-dev chai mocha
 ```
 
-## Sample Usage
+### Sample Usage
 
 Define a test file with JavaScript or TypeScript similar to the following:
 
 ```typescript
+import { describeMutationTestCases } from "automutate-tests";
 import * as path from "path";
 
-import { MyMutationsProvider } from "../lib/MyMutationsProvider";
-import { TestsFactory } from "automutate/test/cases/testsFactory";
+import { MyMutationsProvider } from "./MyMutationsProvider";
 
-(async (): Promise<void> => {
-    const testsFactory = new TestsFactory(
-        (fileName, settingsFileName) => new MyMutationsProvider(fileName, settingsFileName)
-        {
-            actual: "actual.txt",
-            expected: "expected.txt",
-            original: "original.txt",
-            settings: "settings.txt"
-        });
-
-    await testsFactory.describe(path.join(__dirname, "cases"));
-})();
+describeMutationTestCases(
+    path.join(__dirname, "cases"),
+    (fileName, settingsFileName) => new MyMutationsProvider(fileName, settingsFileName),
+    {
+        actual: "actual.txt",
+        expected: "expected.txt",
+        original: "original.txt",
+        settings: "settings.txt"
+    });
+};
 ```
 
 Then, create a directory named `cases` with at least one sub-directory ("case").
-Each case should contain files named `expected` and `original` with your extension.
+Each case should contain files named `expected.txt` and `original.txt` with your extension.
 
-When tests are run, the `original` file will be copied to an `actual` file and mutated.
-It should then contain the same contents as the `expected` file.
+When tests are run, the `original.txt` file will be copied to an `actual.txt` file and mutated.
+It should then contain the same contents as the `expected.txt` file.

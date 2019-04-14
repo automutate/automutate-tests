@@ -1,84 +1,84 @@
+import { FileMutationsApplier, Logger, runMutations } from "automutate";
 import { expect } from "chai";
 import * as fs from "mz/fs";
 
-import { AutoMutator } from "automutate/lib/automutator";
-import { AutoMutatorFactory } from "./autoMutatorFactory";
+import { IMutationsProviderFactory } from "./mutationsProviderFactory";
 
 /**
- * File names or contents for test cases.
+ * File names and settings for test cases.
  */
 export interface ITestCaseSettings {
     /**
-     * File name or contents for the mutation result.
+     * Whether to override the expected file content's with the actual results, instead of checking equality.
+     */
+    accept?: boolean;
+
+    /**
+     * File name for the mutation result.
      */
     actual: string;
 
     /**
-     * File name or contents for what the mutation result should be.
+     * File name for what the mutation result should be.
      */
     expected: string;
 
     /**
-     * File name or contents for the original file contents.
+     * Endlines to normalize \r\n|\n to, if anything.
+     */
+    normalizeEndlines?: string;
+
+    /**
+     * File name for the original file contents.
      */
     original: string;
 
     /**
-     * File name or contents for the settings file.
+     * File name for the settings file.
      */
     settings: string;
 }
 
 /**
- * Describes a single test case to be run.
+ * Runs a single test case.
+ *
+ * @param settings   Settings for the test case.
+ * @param autoMutatorFactory   Creates mutation providers for files.
+ * @returns A Promise for running the test.
  */
-export class TestCase {
-    /**
-     * Generates AutoMutator instances for testing.
-     */
-    private readonly autoMutatorFactory: AutoMutatorFactory;
+export const runTestCase = async (
+    settings: ITestCaseSettings,
+    mutationsProviderFactory: IMutationsProviderFactory,
+): Promise<void> => {
+    // Arrange
+    await arrangeFiles(settings.actual, settings.original);
+    const expectedContents: string = (await fs.readFile(settings.expected)).toString();
+    const logger = new Logger();
 
-    /**
-     * Settings for the test case.
-     */
-    private readonly settings: ITestCaseSettings;
+    // Act
+    await runMutations({
+        logger,
+        mutationsApplier: new FileMutationsApplier({ logger }),
+        mutationsProvider: mutationsProviderFactory(settings.actual, settings.settings),
+    });
 
-    /**
-     * Initializes a new instance of the TestCase class.
-     *
-     * @param settings   Settings for the test case.
-     * @param autoMutatorFactory   Generates AutoMutator instances for testing.
-     */
-    public constructor(settings: ITestCaseSettings, autoMutatorFactory: AutoMutatorFactory) {
-        this.settings = settings;
-        this.autoMutatorFactory = autoMutatorFactory;
+    // Assert
+    let actualContents: string = (await fs.readFile(settings.actual)).toString();
+
+    if (settings.normalizeEndlines !== undefined) {
+        actualContents = actualContents.replace(/\r\n|\n/g, settings.normalizeEndlines);
     }
 
-    /**
-     * Runs the test case.
-     *
-     * @returns A Promise for running the test.
-     */
-    public async run(): Promise<void> {
-        // Arrange
-        await this.arrangeFiles();
-        const expectedContents: string = (await fs.readFile(this.settings.expected)).toString();
-        const autoMutator: AutoMutator = this.autoMutatorFactory.create(this.settings.actual, this.settings.settings);
-
-        // Act
-        await autoMutator.run();
-
-        // Assert
-        const actualContents: string = (await fs.readFile(this.settings.actual)).toString();
+    if (settings.accept) {
+        await fs.writeFile(settings.expected, actualContents);
+    } else {
         expect(actualContents).to.be.equal(expectedContents);
     }
+};
 
-    /**
-     * Resets the test case files.
-     */
-    private async arrangeFiles(): Promise<void> {
-        const original = await fs.readFile(this.settings.original);
-
-        await fs.writeFile(this.settings.actual, original);
-    }
-}
+/**
+ * Resets a test case's files.
+ */
+const arrangeFiles = async (actual: string, original: string): Promise<void> => {
+    await fs.writeFile(actual, await fs.readFile(original));
+};
