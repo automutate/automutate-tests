@@ -130,12 +130,16 @@ const createTestCaseSettings = (settings: ITestDescriptionSettings, casePath: st
         return undefined;
     }
 
+    const original = matches[0];
+    const actual = path.join(casePath, getSettingsFile(settings.actual, matches[0]));
+    const expected = path.join(casePath, getSettingsFile(settings.expected, matches[0]));
+
     return {
         accept: settings.accept,
-        actual: path.join(casePath, getSettingsFile(settings.actual, settings.original)),
-        expected: path.join(casePath, getSettingsFile(settings.expected, settings.original)),
+        actual,
+        expected,
         normalizeEndlines: settings.normalizeEndlines,
-        original: matches[0],
+        original,
         settings: path.join(casePath, settings.settings),
     };
 };
