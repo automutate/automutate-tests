@@ -131,8 +131,8 @@ const createTestCaseSettings = (settings: ITestDescriptionSettings, casePath: st
     }
 
     const original = matches[0];
-    const actual = getSettingsFile(settings.actual, original);
-    const expected = getSettingsFile(settings.expected, original);
+    const actual = path.join(casePath, getSettingsFile(settings.actual, original));
+    const expected = path.join(casePath, getSettingsFile(settings.expected, original));
 
     return {
         accept: settings.accept,
