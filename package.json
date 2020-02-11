@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/automutate/automutate-tests#readme",
   "devDependencies": {
-    "@types/chai": "^4.1.7",
+    "@types/chai": "^4.2.9",
     "@types/glob": "^7.1.1",
     "@types/mocha": "^5.2.6",
     "@types/mz": "0.0.32",
