@@ -5,66 +5,59 @@ import * as path from "path";
 /**
  * Nested hierarchy of test cases.
  */
-export interface IHierarchy {
-    /**
-     * Child test hierarchies.
-     */
-    children: IHierarchy[];
+export interface Hierarchy {
+  /**
+   * Child test hierarchies.
+   */
+  children: Hierarchy[];
 
-    /**
-     * Whether this contains its own test files.
-     */
-    containsTest: boolean;
+  /**
+   * Whether this contains its own test files.
+   */
+  containsTest: boolean;
 
-    /**
-     * Path to the hierarchy.
-     */
-    directoryPath: string;
+  /**
+   * Path to the hierarchy.
+   */
+  directoryPath: string;
 
-    /**
-     * Friendly name of the hierarchy.
-     */
-    groupName: string;
+  /**
+   * Friendly name of the hierarchy.
+   */
+  groupName: string;
 }
 
 /**
- * Generates a directory-based test hierarchy from the file system.
+ * Crawls a directory to generate a test hierarchy.
+ *
+ * @param indicatingFileName   File name that must exist in a test case.
+ * @param topGroupName   Friendly name of the directory.
+ * @param topDirectoryPath   Full path to the directory.
+ * @returns The directory's generated test hierarchy.
  */
-export class HierarchyCrawler {
-    /**
-     * File name that must exist in a test case.
-     */
-    private readonly indicatingFileName: string;
+export const crawlHierarchy = (
+  indicatingFileName: string,
+  topGroupName: string,
+  topDirectoryPath: string
+): Hierarchy => {
+  const crawl = (groupName: string, directoryPath: string): Hierarchy => {
+    const childDirectories = fs
+      .readdirSync(directoryPath)
+      .filter((fileName) =>
+        fs.statSync(path.join(directoryPath, fileName)).isDirectory()
+      );
 
-    /**
-     * Initialize a new instance of the HierarchyCrawler class.
-     *
-     * @param indicatingFileName   File name that must exist in a test case.
-     */
-    public constructor(indicatingFileName: string) {
-        this.indicatingFileName = indicatingFileName;
-    }
+    const matched = glob.sync(path.join(directoryPath, indicatingFileName));
 
-    /**
-     * Crawls a directory to generate a test hierarchy.
-     *
-     * @param groupName   Friendly name of the directory.
-     * @param directoryPath   Full path to the directory.
-     * @returns The directory's generated test hierarchy.
-     */
-    public crawl(groupName: string, directoryPath: string): IHierarchy {
-        const childDirectories: string[] = fs.readdirSync(directoryPath)
-            .filter((fileName: string): boolean =>
-                fs.statSync(path.join(directoryPath, fileName)).isDirectory());
+    return {
+      children: childDirectories.map((childDirectory) =>
+        crawl(childDirectory, path.join(directoryPath, childDirectory))
+      ),
+      containsTest: matched.length > 0,
+      directoryPath,
+      groupName,
+    };
+  };
 
-        const matched = glob.sync(path.join(directoryPath, this.indicatingFileName));
-
-        return {
-            children: childDirectories.map((childDirectory: string): IHierarchy =>
-                this.crawl(childDirectory, path.join(directoryPath, childDirectory))),
-            containsTest: matched.length > 0,
-            directoryPath,
-            groupName,
-        };
-    }
-}
+  return crawl(topGroupName, topDirectoryPath);
+};
