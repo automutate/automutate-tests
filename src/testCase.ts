@@ -1,4 +1,4 @@
-import { NoopLogger, runMutations } from "automutate";
+import { WavesSettings, NoopLogger, runMutations } from "automutate";
 import { expect } from "chai";
 import * as fs from "mz/fs";
 
@@ -37,6 +37,11 @@ export interface TestCaseSettings {
    * File name for the settings file.
    */
   settings: string;
+
+  /**
+   * Settings controlling how many waves to run.
+   */
+  waves?: WavesSettings;
 }
 
 /**
@@ -64,6 +69,7 @@ export const runTestCase = async (
       settings.actual,
       settings.settings
     ),
+    waves: settings.waves,
   });
 
   // Assert

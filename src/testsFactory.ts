@@ -1,3 +1,4 @@
+import { WavesSettings } from "automutate";
 import chalk from "chalk";
 import * as glob from "glob";
 import * as path from "path";
@@ -45,6 +46,11 @@ export interface TestDescriptionSettings {
    * File name for the settings file.
    */
   settings: string;
+
+  /**
+   * Settings controlling how many waves to run.
+   */
+  waves?: WavesSettings;
 }
 
 /**
@@ -80,6 +86,7 @@ const createTestCaseSettings = (
     normalizeEndlines: settings.normalizeEndlines,
     original,
     settings: path.join(casePath, settings.settings),
+    waves: settings.waves,
   };
 };
 
