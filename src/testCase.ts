@@ -60,7 +60,6 @@ export const runTestCase = async (
   // Act
   await runMutations({
     logger,
-    mutationsApplier: new FileMutationsApplier({ logger }),
     mutationsProvider: mutationsProviderFactory(
       settings.actual,
       settings.settings
