@@ -1,4 +1,4 @@
-import { IMutationsProvider } from "automutate";
+import { MutationsProvider } from "automutate";
 
 /**
  * Creates mutation providers for files.
@@ -7,6 +7,6 @@ import { IMutationsProvider } from "automutate";
  * @param settingsFileName   Name of its settings file, if any.
  * @returns A mutation provider for the file.
  */
-export interface IMutationsProviderFactory {
-    (fileName: string, settingsFileName?: string): IMutationsProvider;
+export interface MutationsProviderFactory {
+  (fileName: string, settingsFileName?: string): MutationsProvider;
 }
