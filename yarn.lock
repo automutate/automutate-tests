@@ -231,10 +231,10 @@ assertion-error@^1.1.0:
   resolved "https://registry.yarnpkg.com/assertion-error/-/assertion-error-1.1.0.tgz#e60b6b0e8f301bd97e5375215bda406c85118c0b"
   integrity sha512-jgsaNduz+ndvGyFt3uSuWqvy4lCnIJiovtouQN5JZHOKCS2QuhEdbcQHFhVksz2N2U9hXJo8odG7ETyWlEeuDw==
 
-automutate@^0.7.2:
-  version "0.7.3"
-  resolved "https://registry.yarnpkg.com/automutate/-/automutate-0.7.3.tgz#589ca040592dec27b3c5c3157fd4164295129b34"
-  integrity sha512-oo0K4Hc980HxhxoDL8vInUKKUygzYsUl2BiRnqNVf4hsdUM4YkHllhR6A48G54MU3Tqr95klOV/CVJzee82/tg==
+automutate@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/automutate/-/automutate-0.8.0.tgz#b41a2907d1b2a4fc35c707e66585b889bcc30183"
+  integrity sha512-qWrwFpyp990TmLXwlzEnvMgGNr/js3swntVUHQ5d0kDlck6AgEy0cYj6+qqU30vlj7C/o8Z6BHovVTUIx9bamA==
 
 balanced-match@^1.0.0:
   version "1.0.2"

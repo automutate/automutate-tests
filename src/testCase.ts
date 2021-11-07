@@ -1,4 +1,4 @@
-import { FileMutationsApplier, NoopLogger, runMutations } from "automutate";
+import { NoopLogger, runMutations } from "automutate";
 import { expect } from "chai";
 import * as fs from "mz/fs";
 
