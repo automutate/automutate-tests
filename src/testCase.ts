@@ -1,4 +1,4 @@
-import { WavesSettings, NoopLogger, runMutations } from "automutate";
+import { WavesSettings, runMutations } from "automutate";
 import { expect } from "chai";
 import * as fs from "mz/fs";
 
@@ -60,7 +60,7 @@ export const runTestCase = async (
   const expectedContents: string = (
     await fs.readFile(settings.expected)
   ).toString();
-  const logger = new NoopLogger();
+  const logger = {};
 
   // Act
   await runMutations({
